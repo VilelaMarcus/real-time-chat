@@ -8,9 +8,8 @@ import {
     Title, 
     ImageOverlay, 
     ProfileImageWrapper,
-    UploadHeading,
-    Input,
     IconWrapper,
+    Input2
 } from "./Register.styles";
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
@@ -35,41 +34,34 @@ const Register = () => {
 
     const handleSelectLogo = async event => {
       if (event.currentTarget.files?.[0]) {
-        const file = event.currentTarget.files[0];
 
+        const file = event.currentTarget.files[0];
         console.log(file);
       }
     };
-
 
     return (
         <RegisterContent>
             <FormContainer>
                 <Title>Bem Vindo 👋</Title>  
-                <UploadHeading>Upload </UploadHeading>
-                <Input
-                    type="file"
-                    accept="image/png, image/jpeg"
-                    onChange={handleSelectLogo}
-                />
                 <SubTitle>Converse e conecte-se em tempo real</SubTitle>  
-                <ProfileImageWrapper>
+                <ProfileImageWrapper >
                     <ImgContainer
-                    
-                    onMouseEnter={() => setIsHovered(true)} 
-                    onMouseLeave={() => setIsHovered(false)}>
+                        onMouseEnter={() => setIsHovered(true)} 
+                        onMouseLeave={() => setIsHovered(false)}>
                         <ProfileImage
                             alt={'user-profile:user-profile'}
                             src={logoUrl}
                         />                    
                         {isHovered && (
-                            <ImageOverlay onClick={() => setShowImageModal(true)}>
-                                <IconWrapper
-                                    type="file"
-                                    accept="image/png, image/jpeg"
-                                    onChange={handleSelectLogo}
-                                >
+                            <ImageOverlay>
+                                <IconWrapper>
                                     <IconYellow />
+                                    <Input2
+                                        type="file"
+                                        accept="image/png, image/jpeg"
+                                        onChange={handleSelectLogo}
+                                    />
                                 </IconWrapper>
                             </ImageOverlay>
                         )}

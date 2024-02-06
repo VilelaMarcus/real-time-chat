@@ -152,7 +152,25 @@ const Icon = styled.img`
   padding: 10px;
 `;
 
+const IconWrapper2 = styled.label`
+  border: 3px solid #424242a4;
+  border-radius: 16px;
+  padding: 0px 8px;
+  cursor: pointer;
+  display: flex;
+`;
 
+const Input2 = styled.input`
+  display: none;
+`;
+
+const UploadHeading2 = styled.h4`
+  font-size: ${rem(15)};
+`;
+
+const Icon2 = styled.img``;
+
+export { Icon2, IconWrapper2, Input2, UploadHeading2 };
 
 export {
   RegisterContent,
