@@ -1,4 +1,5 @@
-import styled from '@emotion/styled';
+import styled from '@emotion/styled'
+import { rem } from 'polished';
 
 const RegisterContent = styled.div`
   width: 100vw;
@@ -38,58 +39,37 @@ const InputForm = styled.input`
 `;
 
 const Title = styled.h1`
-font-size: 42px; 
-font-family: 'Avenir'; 
-letter-spacing: 0.5px; 
-color: #e8e8e8; 
-padding-bottom: 12px; 
+  font-size: 42px; 
+  font-family: 'Avenir'; 
+  letter-spacing: 0.5px; 
+  color: #e8e8e8; 
+  padding-bottom: 12px; 
 `;
   
 
 
 const SubTitle = styled.h2`
-font-size: 18px;
-font-family: 'Avenir';
-letter-spacing: 0.5px;
-color: #afafaf;
-padding-bottom: 24px;
+  font-size: 18px;
+  font-family: 'Avenir';
+  letter-spacing: 0.5px;
+  color: #afafaf;
+  padding-bottom: 24px;
 `;
-
-
-const ProfileImage = styled.img`
-  width: 100%;
-  height: 100%;
-  -webkit-clip-path: polygon(
-    50% 0%,
-    100% 25%,
-    100% 75%,
-    50% 100%,
-    0% 75%,
-    0% 25%
-  );
-  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  background: no-repeat center center;
-`;
-
 
 
 const RegisterButton = styled.button`
-width: 100%;
-height: 53px;
-color: white;
-background-color: #fa541c;
-border: none;
-outline: none;
-border-radius: 8px;
-font-family: "Avenir";
-cursor: pointer;
-transition: all .44s ease;
--webkit-transition: all .44s ease;
--moz-transition: all .44s ease;
+  width: 100%;
+  height: 53px;
+  color: white;
+  background-color: #fa541c;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  font-family: "Avenir";
+  cursor: pointer;
+  transition: all .44s ease;
+  -webkit-transition: all .44s ease;
+  -moz-transition: all .44s ease;
 `;
 
 
@@ -113,20 +93,50 @@ const ImageOverlay = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  visibility: hidden;
 `;
 
 const ProfileImageWrapper = styled.div`
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: ${rem(-35)};
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
-  left: 35%;
+
+`;
+
+const Input = styled.input`
+  display: none;
+`;
+
+const UploadHeading = styled.h4`
+  font-size: ${rem(15)};
+`;
+
+
+const ProfileImage = styled.img`
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.3);
+  width: ${props => (props.isSmall ? rem(90) : rem(150))};
+  height: ${props => (props.isSmall ? rem(100) : rem(150))};
+  box-shadow: 3px 3px 3px 3px #ccc;
+   -webkit-clip-path: polygon(
+    50% 0%,
+    100% 25%,
+    100% 75%,
+    50% 100%,
+    0% 75%,
+    0% 25%
+  );
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background: no-repeat center center;
+    
+
 `;
 
 const IconWrapper = styled.label`
-  background: black;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -147,6 +157,8 @@ const Icon = styled.img`
 export {
   RegisterContent,
   InputForm,
+  UploadHeading,
+  Input,
   LabelInput,
   RegisterButton,
   Title,

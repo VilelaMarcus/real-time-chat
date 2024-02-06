@@ -8,11 +8,14 @@ import {
     Title, 
     ImageOverlay, 
     ProfileImageWrapper,
-    Icon,
+    UploadHeading,
+    Input,
     IconWrapper,
 } from "./Register.styles";
+import { useState } from 'react';
 import TextField from '@mui/material/TextField';
-import logoUrl from './default-avatar.png';
+import logoUrl from '../../assets/images/default-avatar.png';
+import { IconYellow } from '../../assets/Icons/edit-icon.jsx';
 
 const InputStyleForm = {
     backgroundColor: '#3e404b',
@@ -27,62 +30,77 @@ const InputStyleForm = {
 
 
 const Register = () => {
-    // const onSubmit = (e) => {
-    //   e.preventDefault();
-    //   const { value } = e.target[0];
-    //   props.onAuth({ username: value, secret: value });
-    // };
+    const [isHovered, setIsHovered] = useState(true);
 
-  
+
+    const handleSelectLogo = async event => {
+      if (event.currentTarget.files?.[0]) {
+        const file = event.currentTarget.files[0];
+
+        console.log(file);
+      }
+    };
+
+
     return (
-    <RegisterContent>
-        <FormContainer>
-            <Title>Bem Vindo 👋</Title>  
-            <SubTitle>Converse e conecte-se em tempo real</SubTitle>  
-            <ProfileImageWrapper>
-                <ImgContainer>
-                    <ProfileImage
-                        onClick={() => console.log('click')}
-                        alt={'user-profile:user-profile'}
-                        src={logoUrl}
-                    />                    
-                    <ImageOverlay onClick={() => console.log('click2')}>
-                        <IconWrapper>
-                            <Icon
-                            alt={'user-profile:edit'}
-                            src="/images/icons/icn-edit-yellow.svg"
-                            />
-                        </IconWrapper>
-                    </ImageOverlay>                
-                </ImgContainer>
-            </ProfileImageWrapper>
-            <TextField 
-                label="Nome" 
-                variant="filled" 
-                style={InputStyleForm} 
-                sx={{
-                '& .MuiInputLabel-root': {
-                color: 'white',
-                },
-                input: { color: 'white' }
-                }}
-            />
-            <TextField 
-                label="Status" 
-                variant="filled" 
-                style={InputStyleForm} 
-                sx={{
-                '& .MuiInputLabel-root': {
-                color: 'white',
-                },
-                input: { color: 'white' }
-                }}
-            />
-            <RegisterButton type="submit">Register</RegisterButton>
-        </FormContainer>
-    </RegisterContent>
+        <RegisterContent>
+            <FormContainer>
+                <Title>Bem Vindo 👋</Title>  
+                <UploadHeading>Upload </UploadHeading>
+                <Input
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    onChange={handleSelectLogo}
+                />
+                <SubTitle>Converse e conecte-se em tempo real</SubTitle>  
+                <ProfileImageWrapper>
+                    <ImgContainer
+                    
+                    onMouseEnter={() => setIsHovered(true)} 
+                    onMouseLeave={() => setIsHovered(false)}>
+                        <ProfileImage
+                            alt={'user-profile:user-profile'}
+                            src={logoUrl}
+                        />                    
+                        {isHovered && (
+                            <ImageOverlay onClick={() => setShowImageModal(true)}>
+                                <IconWrapper
+                                    type="file"
+                                    accept="image/png, image/jpeg"
+                                    onChange={handleSelectLogo}
+                                >
+                                    <IconYellow />
+                                </IconWrapper>
+                            </ImageOverlay>
+                        )}
+                    </ImgContainer>
+                </ProfileImageWrapper>
+                <TextField 
+                    label="Usuario" 
+                    variant="filled" 
+                    style={InputStyleForm} 
+                    sx={{
+                        '& .MuiInputLabel-root': {
+                            color: 'white',
+                        },
+                        input: { color: 'white' }
+                    }}
+                />
+                <TextField 
+                    label="Senha" 
+                    variant="filled" 
+                    style={InputStyleForm} 
+                    sx={{
+                        '& .MuiInputLabel-root': {
+                            color: 'white',
+                        },
+                        input: { color: 'white' }
+                    }}
+                />
+                <RegisterButton type="submit">Register</RegisterButton>
+            </FormContainer>
+        </RegisterContent>
     );
 };
-
 
 export default Register;
