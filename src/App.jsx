@@ -1,6 +1,6 @@
 import "./App.css";
 
-import Register from "./components/Authentication/Register";
+import Register from "./pages/Register/Register";
 
 function App() {
 

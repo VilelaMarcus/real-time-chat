@@ -4,10 +4,11 @@ import { rem } from 'polished';
 const RegisterContent = styled.div`
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(75deg, rgb(20, 23, 33) 0%, rgb(20, 23, 33) 50%, rgba(20, 23, 33,0.8) 100%);
-  /* Vertical center */
-  display: table-cell;
-  vertical-align: middle;
+  background: linear-gradient(75deg, rgb(20, 23, 33) 0%, rgb(20, 23, 33) 50%, rgba(20, 23, 33, 0.8) 100%);
+  /* Centralizar horizontalmente */
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
 `;
 
 // const Image = styled.img`
@@ -32,7 +33,7 @@ const InputForm = styled.input`
   `;
 
 
-  const FormContainer = styled.div`
+  const FormContainer = styled.form`
   width: 50%;
   max-width: 350px;
   padding: 0% 25% 0% 25%;
@@ -67,6 +68,7 @@ const RegisterButton = styled.button`
   border-radius: 8px;
   font-family: "Avenir";
   cursor: pointer;
+  font-size: 20px;
   transition: all .44s ease;
   -webkit-transition: all .44s ease;
   -moz-transition: all .44s ease;
@@ -170,11 +172,23 @@ const UploadHeading2 = styled.h4`
 
 const Icon2 = styled.img``;
 
+const InputStyleForm = {
+  backgroundColor: '#3e404b',
+  color: 'white',
+  fontFamily: 'Avenir',
+  outline: 'none',
+  border: 'none',
+  borderRadius: '8px',
+  width: '100%',
+  marginBottom: '12px',
+}
+
 export { Icon2, IconWrapper2, Input2, UploadHeading2 };
 
 export {
   RegisterContent,
   InputForm,
+  InputStyleForm,
   UploadHeading,
   Input,
   LabelInput,
