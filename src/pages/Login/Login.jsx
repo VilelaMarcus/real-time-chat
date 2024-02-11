@@ -1,10 +1,13 @@
 import  { useState } from "react";
+import { Link } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 
+import { useDispatch } from "react-redux"
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../db.js";
-import {   
 
+import { actions } from "../../redux/slices/userSlice.js";
+import {   
     FormContainer, 
     RegisterButton, 
     RegisterContent,  
@@ -15,15 +18,21 @@ import {
 
 
 const Login = () => {
-  const [err, setErr] = useState(false);
+    const [err, setErr] = useState(false);
 
-  const handleSubmit = async (e) => {
+    const dispatch = useDispatch();
+
+    const handleSubmit = async (e) => {
     e.preventDefault();
     const email = e.target[0].value;
     const password = e.target[1].value;
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const user = await signInWithEmailAndPassword(auth, email, password);
+
+      if(user){
+        dispatch(actions.Login(user))
+      }
     } catch (err) {
       setErr(true);
     }
@@ -33,6 +42,7 @@ const Login = () => {
         <RegisterContent>
             <FormContainer onSubmit={handleSubmit}>
                 <Title>Bem Vindo 👋</Title>  
+                <SubTitle>Converse e conecte-se em tempo real</SubTitle>  
                 <TextField 
                     label="Nome de Usuario" 
                     variant="filled" 
@@ -57,7 +67,9 @@ const Login = () => {
                         input: { color: 'white' }
                     }}
                 />
-                <RegisterButton type="submit">Entrar</RegisterButton>
+                <RegisterButton type="submit">Entrar</RegisterButton>                 {/* Text below button with link to Register page */}
+                 <p style={{ color: 'white', marginTop: '10px', fontSize: '1.5vh' }}>Não tem uma conta? <Link to="/register" style={{ color: 'white', textDecoration: 'underline' }}>Cadastre-se</Link></p>
+           
             </FormContainer>
         </RegisterContent>
     );

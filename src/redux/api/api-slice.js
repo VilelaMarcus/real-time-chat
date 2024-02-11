@@ -9,7 +9,7 @@ export const apiSlice = createApi({
   ],
   baseQuery: fetchBaseQuery({
     mode: 'cors',
-    baseUrl: process.env.REACT_APP_API_URL, 
+    baseUrl: 'process.env.REACT_APP_API_URL', 
   }),
   endpoints: (build) => ({
     readUser: build.query({ query: () => '' }),
