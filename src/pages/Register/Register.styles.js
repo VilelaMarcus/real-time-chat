@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import { rem } from 'polished';
 
 const RegisterContent = styled.div`
+  margin: 0;
   width: 100vw;
   height: 100vh;
   background: linear-gradient(75deg, rgb(20, 23, 33) 0%, rgb(20, 23, 33) 50%, rgba(20, 23, 33, 0.8) 100%);
@@ -10,15 +11,6 @@ const RegisterContent = styled.div`
   justify-content: center; /* Centraliza horizontalmente */
   align-items: center; /* Centraliza verticalmente */
 `;
-
-// const Image = styled.img`
-//   color: inherit;
-// `;
-
-// const InputStatus = styled.span`
-//   color: ${props =>
-//     props.isAvailable ? 'var(--primary-700)' : 'var(--red-800)'};
-// `;
 
 const InputForm = styled.input`
   background-color: #3e404b;

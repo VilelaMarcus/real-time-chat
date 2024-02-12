@@ -1,94 +1,64 @@
-import { useState } from "react";
+import  { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import TextField from '@mui/material/TextField';
-import logoUrl from '../../assets/images/default-avatar.png';
-import { IconYellow } from '../../assets/Icons/edit-icon.jsx';
-// import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-// import { auth, db, storage } from "../../db.js";
-// import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-// import { doc, setDoc } from "firebase/firestore";
-// import { useNavigate } from "react-router-dom";
 
-import {   
-    FormContainer, 
-    ProfileImage, 
-    RegisterButton, 
-    RegisterContent, 
-    ImgContainer, 
-    SubTitle, 
-    Title, 
-    ImageOverlay,
-    InputStyleForm, 
-    ProfileImageWrapper,
-    IconWrapper,
-    Input2
+import { useDispatch } from "react-redux"
+
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../db.js";
+
+import { actions } from "../../redux/slices/userSlice.js";
+import {
+    FormContainer,
+    RegisterButton,
+    RegisterContent,
+    SubTitle,
+    Title,
+    InputStyleForm,
 } from "./Login.styles.js";
 
 
-const Register = () => {
-  // const [err, setErr] = useState(false);
-  // const [loading, setLoading] = useState(false);
-  // const navigate = useNavigate();
+const Login = () => {
+    const [err, setErr] = useState(false);
 
-  const handleSubmit = async (e) => {
-    // setLoading(true);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const handleSubmit = async (e) => {
     e.preventDefault();
-    const displayName = e.target[0].value;
-    const email = e.target[1].value;
-    const password = e.target[2].value;
-    const confirmedPassword = e.target[3].value;
+    const email = e.target[0].value;
+    const password = e.target[1].value;
+
+    try {
+        const user = await signInWithEmailAndPassword(auth, email, password);
+
+        const userToSave = {
+            id: user.user.uid,
+            name: user.user.displayName,
+            email: user.user.email,
+            image: user.user.photoURL,
+        };
     
-    console.log(displayName, email, password, confirmedPassword);
 
-    // try {
-    //   //Create user
-    //   const res = await createUserWithEmailAndPassword(auth, email, password);
-
-    //   //Create a unique image name
-    //   const date = new Date().getTime();
-    //   const storageRef = ref(storage, `${displayName + date}`);
-
-    //   await uploadBytesResumable(storageRef, file).then(() => {
-    //     getDownloadURL(storageRef).then(async (downloadURL) => {
-    //       try {
-    //         //Update profile
-    //         await updateProfile(res.user, {
-    //           displayName,
-    //           photoURL: downloadURL,
-    //         });
-    //         //create user on firestore
-    //         await setDoc(doc(db, "users", res.user.uid), {
-    //           uid: res.user.uid,
-    //           displayName,
-    //           email,
-    //           photoURL: downloadURL,
-    //         });
-
-    //         //create empty user chats on firestore
-    //         await setDoc(doc(db, "userChats", res.user.uid), {});
-    //         navigate("/");
-    //       } catch (err) {
-    //         console.log(err);
-    //         setErr(true);
-    //         setLoading(false);
-    //       }
-    //     });
-    //   });
-    // } catch (err) {
-    //   setErr(true);
-    //   setLoading(false);
-    // }
+        if(user){
+            navigate("/");
+            dispatch(actions.login(userToSave))
+        }
+    } catch (err) {
+      setErr(true);
+    }
   };
 
     return (
         <RegisterContent>
             <FormContainer onSubmit={handleSubmit}>
-                <Title>Bem Vindo 👋</Title>  
-                <SubTitle>Converse e conecte-se em tempo real</SubTitle>  
-                <TextField 
-                    label="Nome de Usuario" 
-                    variant="filled" 
+                <Title>Bem Vindo 👋</Title>
+                <SubTitle>Converse e conecte-se em tempo real</SubTitle>
+                <TextField
+                    label="Email"
+                    variant="filled"
                     required
-                    style={InputStyleForm} 
+                    style={InputStyleForm}
                     sx={{
                         '& .MuiInputLabel-root': {
                             color: 'white',
@@ -96,11 +66,11 @@ const Register = () => {
                         input: { color: 'white' }
                     }}
                 />
-                <TextField 
-                    label="Senha" 
-                    variant="filled" 
+                <TextField
+                    label="Senha"
+                    variant="filled"
                     required
-                    style={InputStyleForm} 
+                    style={InputStyleForm}
                     sx={{
                         '& .MuiInputLabel-root': {
                             color: 'white',
@@ -109,9 +79,11 @@ const Register = () => {
                     }}
                 />
                 <RegisterButton type="submit">Entrar</RegisterButton>
+                {err && <span>Something went wrong</span>}
+                <p style={{ color: 'white', marginTop: '10px', fontSize: '1.5vh' }}>Não tem uma conta? <Link to="/register" style={{ color: 'white', textDecoration: 'underline' }}>Cadastre-se</Link></p>
             </FormContainer>
         </RegisterContent>
     );
 };
 
-export default Register;
+export default Login;

@@ -2,13 +2,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import { apiSlice } from './api/api-slice';
 import { useMemo } from 'react';
 
-import { rootReducer, rootState } from './root-reducer';
+import { rootReducer, rootState } from './root-reduce';
 
 /**
  * Constants
  */
 
-const isProduction = process.env.NODE_ENV === 'production';
+// const isProduction = process.env.NODE_ENV === 'production';
 
 /**
  * Setup store
@@ -16,7 +16,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 function initStore(preloadedState = rootState) {
   const _store = configureStore({
-    devTools: !isProduction,
+    devTools: 'developement',
     preloadedState,
     reducer: rootReducer,
     middleware: getDefaultMiddleware =>

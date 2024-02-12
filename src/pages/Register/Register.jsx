@@ -6,7 +6,10 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db, storage } from "../../db.js";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
-// import { useNavigate } from "react-router-dom";
+
+import { useDispatch } from "react-redux"
+import { actions } from "../../redux/slices/userSlice.js";
+import { useNavigate } from "react-router-dom";
 
 import {   
     FormContainer, 
@@ -28,81 +31,76 @@ import { toBase64 } from "../../utils/to-base64.JS";
 const Register = () => {
     const [err, setErr] = useState(false);
     const [file, setFile] = useState({});
-    const [loading, setLoading] = useState(false);
     const [logoUrl, setLogoUrl] = useState();
+    
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {   
-    // setLoading(true);
-    e.preventDefault();
-    const displayName = e.target[0].value;
-    const email = e.target[1].value;
-    const password = e.target[2].value;
-    const confirmedPassword = e.target[3].value;
+        e.preventDefault();
+        const displayName = e.target[0].value;
+        const email = e.target[1].value;
+        const password = e.target[2].value;
+        const confirmedPassword = e.target[3].value;
 
-    console.log(displayName, email, password, confirmedPassword);
+        console.log(displayName, email, password, confirmedPassword);
 
-    try {
-    
-        const res = await createUserWithEmailAndPassword(auth, email, password);
-
-      //Create a unique image name
-        const date = new Date().getTime();
-        const storageRef = ref(storage, `${displayName + date}`);
-        
-        console.log(res.user);
-        console.log('res.user');
-
-        await uploadBytesResumable(storageRef, file).then(() => {
-        getDownloadURL(storageRef).then(async (downloadURL) => {
         try {
-            //Update profile
-            await updateProfile(res.user, {
-                name: displayName,
-                photoURL: downloadURL,
-            });
+        
+            const res = await createUserWithEmailAndPassword(auth, email, password);
+            const date = new Date().getTime();
+            const storageRef = ref(storage, `${displayName + date}`);
 
-            //create user on firestore
-            await setDoc(doc(db, "User", res.user.uid), {
-                Id: res.user.uid,
-                name: displayName,
-                email,
-                image: downloadURL,
-            });
+            await uploadBytesResumable(storageRef, file).then(() => {
+            getDownloadURL(storageRef).then(async (downloadURL) => {
+            try {
+                //Update profile
+                await updateProfile(res.user, {
+                    name: displayName,
+                    photoURL: downloadURL,
+                });
 
-            //create empty user chats on firestore
-            await setDoc(doc(db, "userChats", res.user.uid), {});
-        } catch (err) {
-            console.log(err);
-            setErr(true);
-            setLoading(false);
-        }
+                const userToSave = {
+                    Id: res.user.uid,
+                    name: displayName,
+                    email,
+                    image: downloadURL,
+                };
+            
+                //create user on firestore
+                await setDoc(doc(db, "User", res.user.uid), {
+                    userToSave
+                });          
+        
+                if(res){
+                    navigate("/");
+                    dispatch(actions.login(userToSave))
+                }
+                //create empty user chats on firestore
+                await setDoc(doc(db, "userChats", res.user.uid), {});
+            } catch (err) {
+                console.log(err);
+                setErr(true);
+            }
+            });
         });
-    });
     } catch (err) {
       setErr(true);
-      setLoading(false);
     }
 };
 
     const [isHovered, setIsHovered] = useState(true);
 
-    const handleSelectLogo = async event => {
-        console.log('file');
-        console.log(event.currentTarget.files);
-      if (event.currentTarget.files?.[0]) {
-
-        const file = event.currentTarget.files[0];
-
-        
+const handleSelectLogo = async event => {
+    if (event.currentTarget.files?.[0]) {
+        const file = event.currentTarget.files[0];        
         const base64Logo = (await toBase64(
             event?.currentTarget?.files[0],
-          ));
-  
-          setLogoUrl(base64Logo);
-        console.log(file);
+        ));
+        setLogoUrl(base64Logo);
         setFile(file);
-      }
-    };
+    } 
+};
 
     return (
         <RegisterContent>
@@ -180,6 +178,8 @@ const Register = () => {
                     }}
                 />
                 <RegisterButton type="submit">Registrar</RegisterButton>
+                
+            {err && <span>Something went wrong</span>}
             </FormContainer>
         </RegisterContent>
     );
