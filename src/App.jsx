@@ -19,13 +19,13 @@ const AppWrapper = () => {
 
 function App() {
   const currentUser = useSelector(state => state.user.currentUser);
+  console.log({currentUser})
+
   // eslint-disable-next-line react/prop-types
   const ProtectedRoute = ({ children }) => {
-    if (!currentUser.id) {
+    if (!currentUser.email) {
       return <Navigate to="/login" />;
     }
-
-    console.log({currentUser})
 
     return children
   };
