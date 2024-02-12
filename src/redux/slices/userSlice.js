@@ -17,7 +17,10 @@ export const { reducer, actions } = createSlice({
   initialState,
   reducers: {
     login: (state,  { payload }) => {
-      state.currentUser = payload;
+      state.currentUser = { 
+      ...payload, 
+      id: payload.id
+    };
     },
     logout: () => {
       return initialState;

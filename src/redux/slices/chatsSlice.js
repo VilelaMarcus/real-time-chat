@@ -6,8 +6,10 @@ const initialState = {
   newMessage: ""
 };
 
-export const groupsSlice = createSlice({
-  name: "user",
+const slice = 'chat';
+
+export const { reducer, actions } = createSlice({
+  name: slice,
   initialState,
   reducers: {
     addGroups: (state, action) => {
@@ -16,5 +18,5 @@ export const groupsSlice = createSlice({
   },
 });
 
-export const { addGroups } = groupsSlice.actions;
-export default groupsSlice.reducer;
+
+export { slice };
