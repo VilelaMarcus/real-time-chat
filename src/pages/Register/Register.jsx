@@ -68,9 +68,9 @@ const Register = () => {
                 };
             
                 //create user on firestore
-                await setDoc(doc(db, "User", res.user.uid), {
+                await setDoc(doc(db, "User", res.user.uid),
                     userToSave
-                });          
+                );          
         
                 if(res){
                     navigate("/");

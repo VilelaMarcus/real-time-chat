@@ -2,19 +2,34 @@ import { useState } from "react";
 import { collection, query, where, getDocs, doc } from "firebase/firestore";
 import { db } from "../../db.js";
 import { useSelector } from "react-redux";
+import { SearchButton, SearchContainer, SearchInput } from "./Search.styles";
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [err, setErr] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
+  let debounceTimer;
 
-  const handleSearch = async () => {
-    if (searchTerm.trim() === "") return;
+  console.log({ searchTerm });
+  console.log({ searchResults });
+
+  const debounceSearch = (text) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      handleSearch(text);
+    }, 300); // Adjust the delay time as needed
+  };
+
+  const handleSearch = async (text) => {
+    if (text.trim() === "") {
+      setSearchResults([]);
+      return;
+    }
 
     const q = query(
       collection(db, "User"),
-      where("displayName", "==", searchTerm)
+      where("name", ">=", text)
     );
 
     try {
@@ -26,6 +41,7 @@ const Search = () => {
       setSearchResults(results);
       setErr(false);
     } catch (error) {
+      console.error("Error searching users:", error);
       setSearchResults([]);
       setErr(true);
     }
@@ -45,37 +61,44 @@ const Search = () => {
         await chatDoc.set({ messages: [] });
       }
 
-      // Adicione a lógica para atualizar as conversas do usuário aqui
+      // Add logic to update user chats here
     } catch (error) {
-      console.error("Erro ao selecionar usuário:", error);
+      console.error("Error selecting user:", error);
     }
   };
 
+  const handleChange = (e) => {
+    const text = e.target.value;
+    setSearchTerm(text);
+    debounceSearch(text);
+  };
+
   return (
-    <div className="search">
-      <div className="searchForm">
-        <input
-          type="text"
-          placeholder="Find a user"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button onClick={handleSearch}>Search</button>
-      </div>
+    <SearchContainer>
+      <SearchInput
+        type="text"
+        placeholder="Find a user"
+        value={searchTerm}
+        onChange={handleChange}
+      />
       {err && <span>User not found!</span>}
-      {searchResults.map((user) => (
-        <div
-          key={user.id}
-          className="userChat"
-          onClick={() => handleSelectUser(user)}
-        >
-          <img src={user.photoURL} alt="" />
-          <div className="userChatInfo">
-            <span>{user.displayName}</span>
-          </div>
+      {searchResults.length > 0 && (
+        <div className="searchResults">
+          {searchResults.map((user) => (
+            <div
+              key={user.id}
+              className="userChat"
+              onClick={() => handleSelectUser(user)}
+            >
+              <img src={user.image} alt="" className="userAvatar" />
+              <div className="userChatInfo">
+                <span>{user.name}</span>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      )}
+    </SearchContainer>
   );
 };
 
