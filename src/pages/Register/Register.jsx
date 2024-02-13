@@ -56,13 +56,13 @@ const Register = () => {
             try {
                 //Update profile
                 await updateProfile(res.user, {
-                    name: displayName,
+                    displayName,
                     photoURL: downloadURL,
                 });
 
                 const userToSave = {
                     Id: res.user.uid,
-                    name: displayName,
+                    displayName,
                     email,
                     image: downloadURL,
                 };

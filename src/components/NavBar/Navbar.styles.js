@@ -4,10 +4,11 @@ import styled from 'styled-components';
 export const NavbarContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px; /* Espaçamento interno */
-  background-color: #333; /* Cor de fundo do Navbar */
-  color: #fff; /* Cor do texto */
+  align-items: center;  
+  height: 30px;
+  padding: 10px 20px;
+  background-color: #333; 
+  color: #fff; 
 `;
 
 // Estilos para o logo

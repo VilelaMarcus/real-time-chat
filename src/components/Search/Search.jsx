@@ -2,7 +2,9 @@ import { useState } from "react";
 import { collection, query, where, getDocs, doc } from "firebase/firestore";
 import { db } from "../../db.js";
 import { useSelector } from "react-redux";
-import { SearchButton, SearchContainer, SearchInput } from "./Search.styles";
+import { SearchResultItem, SearchContainer, SearchInput, SearchResultContainer } from "./Search.styles"; // Import SearchResultContainer style
+
+import avatarUrl from '../../assets/images/default-avatar.png';
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,8 +19,8 @@ const Search = () => {
   const debounceSearch = (text) => {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
-      handleSearch(text);
-    }, 300); // Adjust the delay time as needed
+      handleSearch(text); // Convert search term to lowercase
+    }, 300);
   };
 
   const handleSearch = async (text) => {
@@ -29,7 +31,7 @@ const Search = () => {
 
     const q = query(
       collection(db, "User"),
-      where("name", ">=", text)
+      where("displayName", ">=", text) // Perform case-insensitive search
     );
 
     try {
@@ -77,27 +79,27 @@ const Search = () => {
     <SearchContainer>
       <SearchInput
         type="text"
-        placeholder="Find a user"
+        placeholder="Procure por um usuário..."
         value={searchTerm}
         onChange={handleChange}
       />
-      {err && <span>User not found!</span>}
-      {searchResults.length > 0 && (
-        <div className="searchResults">
+      {searchResults.length > 0 && ( // Only render if there are search results
+        <SearchResultContainer> {/* Use SearchResultContainer style */}
           {searchResults.map((user) => (
-            <div
+            <SearchResultItem
               key={user.id}
               className="userChat"
               onClick={() => handleSelectUser(user)}
             >
-              <img src={user.image} alt="" className="userAvatar" />
+              <img src={user.image || avatarUrl} alt="" className="userAvatar" style={{ width: "40px", height: "40px" }} /> {/* Adjust the size */}
               <div className="userChatInfo">
-                <span>{user.name}</span>
+                <span>{user.displayName}</span>
               </div>
-            </div>
+            </SearchResultItem>
           ))}
-        </div>
+        </SearchResultContainer>
       )}
+      {err && <span>User not found!</span>}
     </SearchContainer>
   );
 };

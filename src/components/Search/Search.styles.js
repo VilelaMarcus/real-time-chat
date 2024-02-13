@@ -3,33 +3,35 @@ import styled from 'styled-components';
 // Container principal do Search
 export const SearchContainer = styled.div`
   display: flex;
-  align-items: center;
-  padding: 10px 20px; /* Espaçamento interno */
-  background-color: #444; /* Cor de fundo do Search */
-  color: #fff; /* Cor do texto */
+  flex-direction: column; 
+  padding: 10px 20px; 
+  background-color: #444; 
+  color: #fff;
 `;
 
-// Estilos para o input de busca
 export const SearchInput = styled.input`
-  flex-grow: 1; /* Ocupa todo o espaço disponível */
-  border: none; /* Sem borda */
-  background-color: transparent; /* Cor de fundo transparente */
-  color: #fff; /* Cor do texto */
-  font-size: 14px; /* Tamanho da fonte */
-  padding: 5px; /* Espaçamento interno */
+  flex-grow: 1; 
+  border: none; 
+  background-color: transparent; 
+  color: #fff;
+  font-size: 14px;
+  padding: 5px; 
+  border-bottom: 1px solid #fff; /* Add a bottom border */
 `;
 
-// Estilos para o botão de busca
-export const SearchButton = styled.button`
-  background-color: transparent; /* Cor de fundo transparente */
-  border: none; /* Sem borda */
-  color: #fff; /* Cor do texto */
-  cursor: pointer; /* Cursor do mouse */
-  font-size: 14px; /* Tamanho da fonte */
-  margin-left: 10px; /* Espaçamento à esquerda */
-  transition: color 0.3s ease; /* Transição suave de cor */
+export const SearchResultContainer = styled.div`
+  margin-top: 10px; 
+  display: flex;
+  flex-direction: column;
+`;
 
+export const SearchResultItem = styled.div`
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
   &:hover {
-    color: #ddd; /* Cor do texto ao passar o mouse */
+    background-color: #f0f0f0;
   }
 `;

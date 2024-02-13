@@ -1,7 +1,7 @@
 import {signOut} from "firebase/auth"
 import { auth } from '../../db.js'
 import { useSelector } from "react-redux"
-import { NavbarContainer, Logo, UserContainer, UserImage, UserName, LogoutButton } from './Navbar.styles';
+import { NavbarContainer,  UserContainer, UserImage, UserName, LogoutButton } from './Navbar.styles';
 
 import { useDispatch } from "react-redux"
 import { actions } from "../../redux/slices/userSlice.js";
@@ -25,12 +25,11 @@ const Navbar = () => {
 
   return (
     <NavbarContainer>
-      <Logo></Logo>
       <UserContainer>
         <UserImage src={currentUser.image} alt="User" />
-        <UserName>Marcus</UserName>
-        <LogoutButton onClick={handlerLogout}>Logout</LogoutButton>
+        <UserName>{currentUser.displayName}</UserName>
       </UserContainer>
+        <LogoutButton onClick={handlerLogout}>Logout</LogoutButton>
     </NavbarContainer>
   );
 };

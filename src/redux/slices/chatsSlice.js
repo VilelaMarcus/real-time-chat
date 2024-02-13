@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  allGroups: [],
-  selectedGroup: "",
-  newMessage: ""
+  chatId: {},
+  ChatName: "",
 };
 
 const slice = 'chat';
@@ -12,8 +11,9 @@ export const { reducer, actions } = createSlice({
   name: slice,
   initialState,
   reducers: {
-    addGroups: (state, action) => {
-      return { ...state, ...action.payload };
+    setChat: (state, { payload }) => {
+      state.chatId = payload.chatId;
+      state.ChatName = payload.ChatName;
     },
   },
 });

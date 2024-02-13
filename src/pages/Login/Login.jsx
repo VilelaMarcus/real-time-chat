@@ -34,7 +34,7 @@ const Login = () => {
 
         const userToSave = {
             id: user.user.uid,
-            name: user.user.displayName,
+            displayName: user.user.displayName,
             email: user.user.email,
             image: user.user.photoURL,
         };
