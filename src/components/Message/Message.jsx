@@ -1,10 +1,10 @@
-import { useContext, useEffect, useRef } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { ChatContext } from "../context/ChatContext";
+import { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 
+// eslint-disable-next-line react/prop-types
 const Message = ({ message }) => {
-  const { currentUser } = useContext(AuthContext);
-  const { data } = useContext(ChatContext);
+  
+  const currentUser = useSelector((state) => state.user.currentUser);
 
   const ref = useRef();
 
@@ -15,9 +15,9 @@ const Message = ({ message }) => {
   return (
     <div
       ref={ref}
-      className={`message ${message.senderId === currentUser.uid && "owner"}`}
+      className={`message ${message.senderId === currentUser.id && "owner"}`}
     >
-      <div className="messageInfo">
+      {/* <div className="messageInfo">
         <img
           src={
             message.senderId === currentUser.uid
@@ -27,7 +27,7 @@ const Message = ({ message }) => {
           alt=""
         />
         <span>just now</span>
-      </div>
+      </div> */}
       <div className="messageContent">
         <p>{message.text}</p>
         {message.img && <img src={message.img} alt="" />}

@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { collection, query, where, getDocs, doc } from "firebase/firestore";
+import { collection, query, where, getDoc, getDocs, doc, setDoc } from "firebase/firestore";
 import { db } from "../../db.js";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { SearchResultItem, SearchContainer, SearchInput, SearchResultContainer } from "./Search.styles"; // Import SearchResultContainer style
+
+import { actions } from "../../redux/slices/chatsSlice.js";
 
 import avatarUrl from '../../assets/images/default-avatar.png';
 
@@ -11,10 +13,9 @@ const Search = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [err, setErr] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
-  let debounceTimer;
+  const dispatch = useDispatch();
 
-  console.log({ searchTerm });
-  console.log({ searchResults });
+  let debounceTimer;
 
   const debounceSearch = (text) => {
     clearTimeout(debounceTimer);
@@ -50,22 +51,46 @@ const Search = () => {
   };
 
   const handleSelectUser = async (selectedUser) => {
+    console.log("Selected usexxr:", selectedUser);
     try {
+  
       const combinedId =
         currentUser.uid > selectedUser.id
-          ? `${currentUser.uid}-${selectedUser.id}`
-          : `${selectedUser.id}-${currentUser.uid}`;
+          ? `${currentUser.id}-${selectedUser.id}`
+          : `${selectedUser.id}-${currentUser.id}`;
 
-      const chatDoc = doc(db, "Chat", combinedId);
-      const chatDocSnap = await chatDoc.get();
+    const chatDocRef = doc(db, "Chat", combinedId);
+    const chatDocSnap = await getDoc(chatDocRef);
+
+    
+
+    console.log("Chat doc snap:", chatDocSnap);
 
       if (!chatDocSnap.exists()) {
-        await chatDoc.set({ messages: [] });
-      }
 
-      // Add logic to update user chats here
+        const newChatData = {
+          AdminId: currentUser.id,
+          adminName: currentUser.displayName,
+          chatType: "private",
+          id: combinedId,
+          members: [currentUser.id, selectedUser.id],
+          name: `${selectedUser.displayName}`,
+          lastMessage: "", 
+        };
+
+        //create user on firestore
+        await setDoc(doc(db, "Chat", combinedId),
+          newChatData
+        );         
+
+        dispatch(actions.setChat({ chatId: combinedId, ChatName: newChatData.name }));
+      }
+      else {
+        dispatch(actions.setChat({ chatId: combinedId, ChatName: chatDocSnap.data().name }));
+      }
+    
     } catch (error) {
-      console.error("Error selecting user:", error);
+      console.error("Error selecting user:" , error);
     }
   };
 
