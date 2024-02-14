@@ -8,6 +8,9 @@ const Messages = () => {
   const [messages, setMessages] = useState([]);
   const chatInfo = useSelector((state) => state.chat);
 
+  console.log({chatInfo});
+  console.log({messages});
+
   useEffect(() => {
     const q = query(
       collection(db, "Message"),
@@ -26,8 +29,6 @@ const Messages = () => {
       unSub();
     };
   }, [chatInfo.chatId]);
-
-  console.log(messages);
 
   return (
     <div className="messages">

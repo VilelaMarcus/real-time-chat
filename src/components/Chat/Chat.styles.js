@@ -39,3 +39,12 @@ export const ChatInput = styled.input`
   border-radius: 5px;
   outline: none;
 `;
+
+export const SendMessageButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  margin-left: 10px;
+  vertical-align: middle; /* Alinha verticalmente com o input */
+`;

@@ -54,17 +54,13 @@ const Search = () => {
     console.log("Selected usexxr:", selectedUser);
     try {
   
-      const combinedId =
-        currentUser.uid > selectedUser.id
-          ? `${currentUser.id}-${selectedUser.id}`
-          : `${selectedUser.id}-${currentUser.id}`;
+      const userIds = [currentUser.id, selectedUser.id].sort(); // Ordena os IDs de usuário
+      const combinedId = userIds.join('-'); 
 
-    const chatDocRef = doc(db, "Chat", combinedId);
-    const chatDocSnap = await getDoc(chatDocRef);
+      const chatDocRef = doc(db, "Chat", combinedId);
+      const chatDocSnap = await getDoc(chatDocRef);
 
     
-
-    console.log("Chat doc snap:", chatDocSnap);
 
       if (!chatDocSnap.exists()) {
 

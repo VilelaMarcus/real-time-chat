@@ -15,6 +15,9 @@ export const { reducer, actions } = createSlice({
       state.chatId = payload.chatId;
       state.ChatName = payload.ChatName;
     },
+    setDefaut: (state) => {
+      state = initialState;
+    },
   },
 });
 
