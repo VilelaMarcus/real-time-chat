@@ -8,10 +8,32 @@ export const ChatContainer = styled.div`
 `;
 
 export const ChatHeader = styled.div`
+ display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
   background-color: #333;
   color: #fff;
-  padding: 10px;
-  height: 30px;
+
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Torna a imagem do chat redonda */
+    margin-right: 10px;
+  }
+
+  .userChatInfo {
+    flex-grow: 1;
+  }
+
+  span {
+    font-weight: bold;
+  }
+
+  p {
+    color: #666;
+  }
 `;
 
 export const MessagesContainer = styled.div`
@@ -38,4 +60,13 @@ export const ChatInput = styled.input`
   border: none;
   border-radius: 5px;
   outline: none;
+`;
+
+export const SendMessageButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  margin-left: 10px;
+  vertical-align: middle; /* Alinha verticalmente com o input */
 `;

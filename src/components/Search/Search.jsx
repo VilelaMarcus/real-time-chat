@@ -1,8 +1,10 @@
-import { useState } from "react";
-import { collection, query, where, getDocs, doc } from "firebase/firestore";
+import { useState, useEffect } from "react";
+import { collection, query, where, getDoc, getDocs, doc, setDoc } from "firebase/firestore";
 import { db } from "../../db.js";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { SearchResultItem, SearchContainer, SearchInput, SearchResultContainer } from "./Search.styles"; // Import SearchResultContainer style
+
+import { actions } from "../../redux/slices/chatsSlice.js";
 
 import avatarUrl from '../../assets/images/default-avatar.png';
 
@@ -11,36 +13,35 @@ const Search = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [err, setErr] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
-  let debounceTimer;
+  const dispatch = useDispatch();
 
-  console.log({ searchTerm });
-  console.log({ searchResults });
-
-  const debounceSearch = (text) => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      handleSearch(text); // Convert search term to lowercase
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      handleSearch(searchTerm.trim()); // Convert search term to lowercase
     }, 300);
-  };
+
+    return () => clearTimeout(debounceTimer); // Cleanup timer on unmount or when searchTerm changes
+  }, [searchTerm]);
 
   const handleSearch = async (text) => {
     if (text.trim() === "") {
       setSearchResults([]);
       return;
     }
-
-    const q = query(
-      collection(db, "User"),
-      where("displayName", ">=", text) // Perform case-insensitive search
-    );
-
+  
     try {
-      const querySnapshot = await getDocs(q);
-      const results = querySnapshot.docs.map((doc) => ({
+      const querySnapshot = await getDocs(collection(db, "User"));
+      const allUsers = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setSearchResults(results);
+  
+      // Filtrar os usuários cujo displayName contém o texto de pesquisa fornecido
+      const filteredUsers = allUsers.filter((user) =>
+        user.displayName.toLowerCase().includes(text.toLowerCase())
+      );
+  
+      setSearchResults(filteredUsers);
       setErr(false);
     } catch (error) {
       console.error("Error searching users:", error);
@@ -51,28 +52,61 @@ const Search = () => {
 
   const handleSelectUser = async (selectedUser) => {
     try {
-      const combinedId =
-        currentUser.uid > selectedUser.id
-          ? `${currentUser.uid}-${selectedUser.id}`
-          : `${selectedUser.id}-${currentUser.uid}`;
+    
+      const userIds = [currentUser.id, selectedUser.id].sort(); // Ordena os IDs de usuário
+      const combinedId = userIds.join('-'); 
 
-      const chatDoc = doc(db, "Chat", combinedId);
-      const chatDocSnap = await chatDoc.get();
+      const chatDocRef = doc(db, "Chat", combinedId);
+      const chatDocSnap = await getDoc(chatDocRef);
 
       if (!chatDocSnap.exists()) {
-        await chatDoc.set({ messages: [] });
-      }
+        const newChatData = {
+          AdminId: currentUser.id,
+          adminName: currentUser.displayName,
+          chatType: "private",
+          id: combinedId,
+          members: [currentUser.id, selectedUser.id],
+          name: `${selectedUser.displayName} - ${currentUser.displayName}`,
+          lastMessage: "", 
+          images: {
+            [currentUser.id]: currentUser.image, // Salvar a imagem do usuário atual
+            [selectedUser.id]: selectedUser.image, // Salvar a imagem do usuário selecionado
+          },
+        };
+  
+        const payload = {
+          chatId: combinedId,
+          ChatName: newChatData.name,
+          images: newChatData.images,
+          image: '',
+          chatType: newChatData.chatType,
+        };  
+        
+        //create user on firestore
+        await setDoc(doc(db, "Chat", combinedId),
+          newChatData
+        );         
 
-      // Add logic to update user chats here
+        dispatch(actions.setChat(payload));        
+      }
+      else {
+        dispatch(actions.setChat({ 
+          chatId: combinedId,
+          ChatName: chatDocSnap.data().name,
+          images: chatDocSnap.data().images,
+          image: chatDocSnap.data().image,
+          chatType: chatDocSnap.data().chatType,
+        }));
+      }
+    
     } catch (error) {
-      console.error("Error selecting user:", error);
+      console.error("Error selecting user:" , error);
     }
   };
 
   const handleChange = (e) => {
     const text = e.target.value;
     setSearchTerm(text);
-    debounceSearch(text);
   };
 
   return (
