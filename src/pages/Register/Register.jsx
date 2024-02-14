@@ -25,7 +25,7 @@ import {
     IconWrapper,
     Input2
 } from "./Register.styles.js";
-import { toBase64 } from "../../utils/to-base64.JS";
+import { toBase64 } from "../../utils/to-base64";
 
 
 const Register = () => {
