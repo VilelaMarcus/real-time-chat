@@ -45,6 +45,11 @@ const Chat = () => {
   };
 
   const handleMessageSend = async () => {
+    if (!messageText.trim()) {
+      // Se estiver vazio, exibir uma mensagem de erro ou retornar da função
+      return; // Ou exibir uma mensagem de erro aqui
+    }
+
 
     if (img) {
       const storageRef = ref(storage, uuid());

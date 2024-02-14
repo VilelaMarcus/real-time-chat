@@ -1,38 +1,27 @@
 import { useEffect, useRef } from "react";
+import { MessageContainer, MessageT, MessageText, MessageTime } from './Message.styles';
+
 import { useSelector } from "react-redux";
 
-// eslint-disable-next-line react/prop-types
 const Message = ({ message }) => {
-  
   const currentUser = useSelector((state) => state.user.currentUser);
-
+  const isSender = message.senderId === currentUser.id;
   const ref = useRef();
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   }, [message]);
 
+  // Converter timestamp para uma string de data formatada
+  const formattedTime = new Date(message.time.seconds * 1000).toLocaleString();
+
   return (
-    <div
-      ref={ref}
-      className={`message ${message.senderId === currentUser.id && "owner"}`}
-    >
-      {/* <div className="messageInfo">
-        <img
-          src={
-            message.senderId === currentUser.uid
-              ? currentUser.photoURL
-              : data.user.photoURL
-          }
-          alt=""
-        />
-        <span>just now</span>
-      </div> */}
-      <div className="messageContent">
-        <p>{message.text}</p>
-        {message.img && <img src={message.img} alt="" />}
-      </div>
-    </div>
+    <MessageContainer isSender={isSender}>
+      <MessageT isSender={isSender}>
+        <MessageText>{message.text}</MessageText>
+        <MessageTime>{formattedTime}</MessageTime>
+      </MessageT>
+    </MessageContainer>
   );
 };
 
