@@ -3,6 +3,7 @@ import { auth } from '../../db.js'
 import { useSelector } from "react-redux"
 import { NavbarContainer,  UserContainer, UserImage, UserName, LogoutButton } from './Navbar.styles';
 
+import avatarUrl from '../../assets/images/default-avatar.png';
 import { useDispatch } from "react-redux"
 import { actions } from "../../redux/slices/userSlice.js";
 
@@ -26,7 +27,7 @@ const Navbar = () => {
   return (
     <NavbarContainer>
       <UserContainer>
-        <UserImage src={currentUser.image} alt="User" />
+        <UserImage src={currentUser.image || avatarUrl} alt="User" />
         <UserName>{currentUser.displayName}</UserName>
       </UserContainer>
         <LogoutButton onClick={handlerLogout}>Logout</LogoutButton>

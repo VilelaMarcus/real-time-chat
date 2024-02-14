@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { collection, query, where, getDoc, getDocs, doc, setDoc } from "firebase/firestore";
 import { db } from "../../db.js";
 import { useSelector, useDispatch } from "react-redux";
@@ -15,33 +15,33 @@ const Search = () => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
 
-  let debounceTimer;
-
-  const debounceSearch = (text) => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      handleSearch(text); // Convert search term to lowercase
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      handleSearch(searchTerm.trim()); // Convert search term to lowercase
     }, 300);
-  };
+
+    return () => clearTimeout(debounceTimer); // Cleanup timer on unmount or when searchTerm changes
+  }, [searchTerm]);
 
   const handleSearch = async (text) => {
     if (text.trim() === "") {
       setSearchResults([]);
       return;
     }
-
-    const q = query(
-      collection(db, "User"),
-      where("displayName", ">=", text) // Perform case-insensitive search
-    );
-
+  
     try {
-      const querySnapshot = await getDocs(q);
-      const results = querySnapshot.docs.map((doc) => ({
+      const querySnapshot = await getDocs(collection(db, "User"));
+      const allUsers = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setSearchResults(results);
+  
+      // Filtrar os usuários cujo displayName contém o texto de pesquisa fornecido
+      const filteredUsers = allUsers.filter((user) =>
+        user.displayName.toLowerCase().includes(text.toLowerCase())
+      );
+  
+      setSearchResults(filteredUsers);
       setErr(false);
     } catch (error) {
       console.error("Error searching users:", error);
@@ -51,38 +51,52 @@ const Search = () => {
   };
 
   const handleSelectUser = async (selectedUser) => {
-    console.log("Selected usexxr:", selectedUser);
     try {
-  
+    
       const userIds = [currentUser.id, selectedUser.id].sort(); // Ordena os IDs de usuário
       const combinedId = userIds.join('-'); 
 
       const chatDocRef = doc(db, "Chat", combinedId);
       const chatDocSnap = await getDoc(chatDocRef);
 
-    
-
       if (!chatDocSnap.exists()) {
-
         const newChatData = {
           AdminId: currentUser.id,
           adminName: currentUser.displayName,
           chatType: "private",
           id: combinedId,
           members: [currentUser.id, selectedUser.id],
-          name: `${selectedUser.displayName}`,
+          name: `${selectedUser.displayName} - ${currentUser.displayName}`,
           lastMessage: "", 
+          images: {
+            [currentUser.id]: currentUser.image, // Salvar a imagem do usuário atual
+            [selectedUser.id]: selectedUser.image, // Salvar a imagem do usuário selecionado
+          },
         };
-
+  
+        const payload = {
+          chatId: combinedId,
+          ChatName: newChatData.name,
+          images: newChatData.images,
+          image: '',
+          chatType: newChatData.chatType,
+        };  
+        
         //create user on firestore
         await setDoc(doc(db, "Chat", combinedId),
           newChatData
         );         
 
-        dispatch(actions.setChat({ chatId: combinedId, ChatName: newChatData.name }));
+        dispatch(actions.setChat(payload));        
       }
       else {
-        dispatch(actions.setChat({ chatId: combinedId, ChatName: chatDocSnap.data().name }));
+        dispatch(actions.setChat({ 
+          chatId: combinedId,
+          ChatName: chatDocSnap.data().name,
+          images: chatDocSnap.data().images,
+          image: chatDocSnap.data().image,
+          chatType: chatDocSnap.data().chatType,
+        }));
       }
     
     } catch (error) {
@@ -93,7 +107,6 @@ const Search = () => {
   const handleChange = (e) => {
     const text = e.target.value;
     setSearchTerm(text);
-    debounceSearch(text);
   };
 
   return (

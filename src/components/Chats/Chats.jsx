@@ -1,53 +1,44 @@
-import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../../db.js";
-import { useSelector } from "react-redux";
-import { ChatsContainer, ChatItem, CenteredContainer } from './Chats.styles';
+import { ChatsContainer, ChatItem, CenteredContainer } from "./Chats.styles";
+import { getOtherUserName } from "../../utils/parseName.js";
+import { actions } from "../../redux/slices/chatsSlice.js";
+
+import avatarUrl from '../../assets/images/default-avatar.png';
 
 const Chats = () => {
+  const currentUser = useSelector((state) => state.user.currentUser);
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(false);
-  const currentUser = useSelector((state) => state.user.currentUser);
 
-  const handleSelectUser = async (selectedUser) => {
-    try {
-      const combinedId =
-        currentUser.uid > selectedUser.id
-          ? `${currentUser.uid}-${selectedUser.id}`
-          : `${selectedUser.id}-${currentUser.uid}`;
-  
-      const chatDoc = doc(db, "Chat", combinedId);
-      const chatDocSnap = await chatDoc.get();
-  
-      if (!chatDocSnap.exists()) {
-        await chatDoc.set({ messages: [] });
-      }
-  
-      // Adicione a lógica para atualizar as conversas do usuário aqui
-    } catch (error) {
-      console.error("Error selecting user:", error);
-    }
-  };
-
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const getChats = async () => {
-      try {
-        const unsub = onSnapshot(doc(db, "Chats", currentUser.Id), (doc) => {
-          setChats(doc.data());
+    const fetchChats = async () => {
+      if (currentUser) {
+        try {
+          const chatsRef = collection(db, "Chat");
+          const q = query(chatsRef, where("members", "array-contains", currentUser.id));
+          const unsubscribe = onSnapshot(q, (snapshot) => {
+            const chatsData = [];
+            snapshot.forEach((doc) => {
+              chatsData.push({ id: doc.id, ...doc.data() });
+            });
+            setChats(chatsData);
+            setLoading(false);
+          });
+          return unsubscribe;
+        } catch (error) {
+          console.error("Error fetching chats:", error);
           setLoading(false);
-        });
-
-        return unsub;
-      } catch (error) {
-        console.error("Error fetching chats:", error);
-        setLoading(false);
+        }
       }
     };
 
-    currentUser.uid && getChats();
-  }, [currentUser.uid]);
+    currentUser && fetchChats();
+  }, [currentUser]);
 
   if (loading) {
     return (
@@ -56,9 +47,8 @@ const Chats = () => {
       </CenteredContainer>
     );
   }
-  
-  // Se não houver chats, retorne uma mensagem informando
-  if (Object.keys(chats).length === 0) {
+
+  if (chats.length === 0) {
     return (
       <CenteredContainer>
         <div>No chats available.</div>
@@ -66,16 +56,30 @@ const Chats = () => {
     );
   }
 
+
+
+const handleSelectUser = (chat) => {  
+  const payload = {
+    chatId: chat.id,
+    ChatName: chat.name,
+    image: chat.image,
+    chatType: chat.chatType,
+    images : chat.images
+  }
+  dispatch(actions.setChat(payload));
+  }
+
+
   return (
     <ChatsContainer>
-      {Object.entries(chats)
-        .sort((a, b) => b[1].date - a[1].date)
+      {chats
+        .sort((a, b) => b.date - a.date)
         .map((chat) => (
-          <ChatItem key={chat[0]} onClick={() => handleSelectUser(chat[1].userInfo)}>
-            <img src={chat[1].userInfo.photoURL} alt="" />
+          <ChatItem key={chat.id} onClick={() => handleSelectUser(chat)}>
+            <img src={ chat.images[currentUser.id === chat.members[0] ? chat.members[1] : chat.members[0]] || avatarUrl } alt="" />
+            <span>{getOtherUserName(chat.name, currentUser.displayName)}</span>
             <div className="userChatInfo">
-              <span>{chat[1].userInfo.displayName}</span>
-              <p>{chat[1].lastMessage?.text}</p>
+              <p>{chat.lastMessage?.text}</p>
             </div>
           </ChatItem>
         ))}

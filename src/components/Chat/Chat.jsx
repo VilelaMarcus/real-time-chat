@@ -10,19 +10,34 @@ import {
   Timestamp,
   updateDoc,
 } from "firebase/firestore";
+
+import avatarUrl from '../../assets/images/default-avatar.png';
 import { db, storage } from "../../db.js";
 import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-
-
+import { getOtherUserName } from '../../utils/parseName.js';
 
 const Chat = () => {
-  const chatInfo = useSelector((state) => state.chat);
+  const {
+     chatId,
+      ChatName,
+      image,
+      chatType,
+      images
+  }= useSelector((state) => state.chat);
   const currentUser = useSelector(state => state.user.currentUser);
   const [messageText, setMessageText] = useState('');
   const [img, setImg] = useState(null);
 
-  // Função para lidar com a pressão da tecla Enter no campo de entrada
+  const otherUserId = Object.keys(images).find(id => id !== currentUser.id);
+  const imageToDisplay = images[otherUserId] !== null ? images[otherUserId] : avatarUrl;
+
+
+  console.log({images})
+  console.log(currentUser.id)
+  console.log(images[currentUser.id])
+  console.log({imageToDisplay})
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleMessageSend();
@@ -30,8 +45,6 @@ const Chat = () => {
   };
 
   const handleMessageSend = async () => {
-    console.log('Mensagem enviada:', messageText);
-
 
     if (img) {
       const storageRef = ref(storage, uuid());
@@ -44,10 +57,9 @@ const Chat = () => {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            await updateDoc(doc(db, "chats", chatInfo.chatId), {
+            await updateDoc(doc(db, "Chat", chatId), {
               messages: arrayUnion({
                 id: uuid(),
-                text,
                 senderId: currentUser.id,
                 date: Timestamp.now(),
                 img: downloadURL,
@@ -60,21 +72,21 @@ const Chat = () => {
 
         const newMessage = {
           id: uuid(),
-          chatId: chatInfo.chatId,
+          chatId: chatId,
           contenttype: "text",
           file: "",
           senderId: currentUser.id,
           text: messageText,
-          time: Timestamp.now(), 
+          time: Timestamp.now(),
         };
 
         //create user on firestore
         await setDoc(doc(db, "Message", newMessage.id),
           newMessage
-        );         
-    
+        );
 
-    await updateDoc(doc(db, "Chat", chatInfo.chatId), {
+
+    await updateDoc(doc(db, "Chat", chatId), {
       [ "lastMessage"]: {
         messageText,
       }
@@ -87,11 +99,15 @@ const Chat = () => {
 
   return (
     <ChatContainer>
-      {chatInfo.chatId === '' ? (
+      {chatId === '' ? (
         <div>Envie e receba mensagens no melhor aplicativo de mensagens online</div>
       ) : (
         <>
-          <ChatHeader>{chatInfo.ChatName}</ChatHeader>
+          <ChatHeader>
+            {/* Exibir a imagem e o nome do outro usuário */}
+            <img src={imageToDisplay} alt="Profile" />
+            <span>{getOtherUserName(ChatName, currentUser.displayName)}</span>
+          </ChatHeader>
           <MessagesContainer>
             <Messages />
           </MessagesContainer>
@@ -112,5 +128,6 @@ const Chat = () => {
     </ChatContainer>
   );
 };
+
 
 export default Chat;

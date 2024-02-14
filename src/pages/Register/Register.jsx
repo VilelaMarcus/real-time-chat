@@ -30,7 +30,7 @@ import { toBase64 } from "../../utils/to-base64.JS";
 
 const Register = () => {
     const [err, setErr] = useState(false);
-    const [file, setFile] = useState({});
+    const [file, setFile] = useState();
     const [logoUrl, setLogoUrl] = useState();
     
     const navigate = useNavigate();
@@ -41,12 +41,10 @@ const Register = () => {
         const displayName = e.target[0].value;
         const email = e.target[1].value;
         const password = e.target[2].value;
-        const confirmedPassword = e.target[3].value;
 
-        console.log(displayName, email, password, confirmedPassword);
+        console.log(displayName, email, password);
 
         try {
-        
             const res = await createUserWithEmailAndPassword(auth, email, password);
             const date = new Date().getTime();
             const storageRef = ref(storage, `${displayName + date}`);
@@ -61,16 +59,14 @@ const Register = () => {
                 });
 
                 const userToSave = {
-                    Id: res.user.uid,
+                    id: res.user.uid,
                     displayName,
                     email,
-                    image: downloadURL,
+                    image: file ? downloadURL : null,
                 };
-            
+
                 //create user on firestore
-                await setDoc(doc(db, "User", res.user.uid),
-                    userToSave
-                );          
+                await setDoc(doc(db, "User", res.user.uid), userToSave);
         
                 if(res){
                     navigate("/");
@@ -155,18 +151,6 @@ const handleSelectLogo = async event => {
                 />
                 <TextField 
                     label="Senha" 
-                    variant="filled" 
-                    required
-                    style={InputStyleForm} 
-                    sx={{
-                        '& .MuiInputLabel-root': {
-                            color: 'white',
-                        },
-                        input: { color: 'white' }
-                    }}
-                />
-                <TextField 
-                    label="Confirmar Senha" 
                     variant="filled" 
                     required
                     style={InputStyleForm} 
