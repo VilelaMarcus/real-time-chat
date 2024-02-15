@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { collection, query, where, getDoc, getDocs, doc, setDoc } from "firebase/firestore";
+import { collection, getDoc, getDocs, doc, setDoc } from "firebase/firestore";
 import { db } from "../../db.js";
 import { useSelector, useDispatch } from "react-redux";
 import { SearchResultItem, SearchContainer, SearchInput, SearchResultContainer } from "./Search.styles"; // Import SearchResultContainer style

@@ -1,41 +1,37 @@
-import {signOut} from "firebase/auth"
-import { auth } from '../../db.js'
+import { useState } from 'react';
 import { useSelector } from "react-redux"
-import { NavbarContainer,  UserContainer, UserImage, UserName, LogoutButton } from './Navbar.styles';
+import { NavbarContainer,  UserContainer, UserImage, UserName } from './Navbar.styles';
 
+import SettingsModal from '../Settings/SettingsModal.jsx';
 import SettingsIcon from '@mui/icons-material/Settings';
 import avatarUrl from '../../assets/images/default-avatar.png';
-import { useDispatch } from "react-redux"
-import { actions } from "../../redux/slices/userSlice.js";
-import { Link } from 'react-router-dom';
 
 const Navbar = () => {  
   const currentUser = useSelector(state => state.user.currentUser);
-  const dispatch = useDispatch();
 
-  console.log({currentUser});
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
-  const handlerLogout = async () => {
-    try {
-      console.log("Logout");
-      await signOut(auth);
-      dispatch(actions.logout());
-    } catch (error) {
-      console.error("Erro ao fazer logout:", error);
-    }
-  }
+  const handleOpenSettingsModal = () => {
+    setIsSettingsModalOpen(true);
+  };
 
+  const handleCloseSettingsModal = () => {
+    setIsSettingsModalOpen(false);
+  };
 
   return (
-    <NavbarContainer>
-      <UserContainer>
-        <UserImage src={currentUser.image || avatarUrl} alt="User" />
-        <UserName>{currentUser.displayName}</UserName>
-      </UserContainer>
-      <div style={{color: "white"}}>
-        <SettingsIcon />
-      </div>                
-    </NavbarContainer>
+    <>
+      <NavbarContainer>
+        <UserContainer>
+          <UserImage src={currentUser.image || avatarUrl} alt="User" />
+          <UserName>{currentUser.displayName}</UserName>
+        </UserContainer>
+        <div style={{color: "white", cursor: 'pointer' }} onClick={handleOpenSettingsModal}>
+          <SettingsIcon />
+        </div>                
+      </NavbarContainer>
+      <SettingsModal isOpen={isSettingsModalOpen} onClose={handleCloseSettingsModal} />
+    </>    
   );
 };
 

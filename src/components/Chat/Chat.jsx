@@ -31,8 +31,6 @@ const Chat = () => {
   const {
      chatId,
       ChatName,
-      image,
-      chatType,
       images
   }= useSelector((state) => state.chat);
   const currentUser = useSelector(state => state.user.currentUser);

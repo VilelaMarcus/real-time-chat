@@ -32,8 +32,8 @@ import { toBase64 } from "../../utils/to-base64";
 
 
 const Register = () => {
-    const [err, setErr] = useState(false);
     const [file, setFile] = useState();    
+    const [isHovered, setIsHovered] = useState(true);
     const [loading, setLoading] = useState(false);
     const [logoUrl, setLogoUrl] = useState();
     
@@ -81,18 +81,15 @@ const Register = () => {
                 await setDoc(doc(db, "userChats", res.user.uid), {});
             } catch (err) {
                 console.log(err);
-                setErr(true);
                 setLoading(false);
             }
             });
         });
-    } catch (err) {
-      setErr(true);      
+    } catch (err) { 
       setLoading(false);
     }
 };
 
-    const [isHovered, setIsHovered] = useState(true);
 
 const handleSelectLogo = async event => {
     if (event.currentTarget.files?.[0]) {
@@ -156,7 +153,7 @@ const handleSelectLogo = async event => {
                         input: { color: 'white' }
                     }}
                 />
-                <TextField 
+                                <TextField 
                     label="Senha" 
                     variant="filled" 
                     required
