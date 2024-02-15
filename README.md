@@ -1,9 +1,7 @@
-# Entidades Definidas >
+# Instruções de Uso
 
-Chat: { id: string, description: string, image: string, name: string, adminId: string, adminName: string, members: [usersId], chatType: string, messages: [messagesID], lastMessage: id}.
+O app foi deployado in live utilizando a plataforma vecel, que esta disponivel atravez desse link:
 
+https://real-time-chat-livid.vercel.app/
 
-Messages: {id: string, avatar: string, group: string, name: string, text: string, time: number, userID: string}.
-
-
-Users: {id: string, image: string, name: string, status: string,}.
+No aplicativo voce pode criar um usuario colocar sua foto de perfil e iteragir com outros usuarios.

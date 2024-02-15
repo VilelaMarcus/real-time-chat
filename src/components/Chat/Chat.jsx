@@ -117,11 +117,11 @@ const Chat = () => {
       {chatId === '' ? (
         <>
         <ChatHeader />
-        <EmptyChatContainer>
-          <EmptyChatTitle>
-            Envie e receba mensagens no melhor aplicativo de mensagens online
-          </EmptyChatTitle>
-        </EmptyChatContainer>
+          <EmptyChatContainer>
+            <EmptyChatTitle>
+              Envie e receba mensagens no melhor aplicativo de mensagens online
+            </EmptyChatTitle>
+          </EmptyChatContainer>
         </>
       ) : (
         <>

@@ -32,7 +32,7 @@ export const ChatHeader = styled.div`
   img {
     width: 40px;
     height: 40px;
-    border-radius: 50%; /* Torna a imagem do chat redonda */
+    border-radius: 50%; 
     margin-right: 10px;
   }
 

@@ -3,9 +3,11 @@ import { auth } from '../../db.js'
 import { useSelector } from "react-redux"
 import { NavbarContainer,  UserContainer, UserImage, UserName, LogoutButton } from './Navbar.styles';
 
+import SettingsIcon from '@mui/icons-material/Settings';
 import avatarUrl from '../../assets/images/default-avatar.png';
 import { useDispatch } from "react-redux"
 import { actions } from "../../redux/slices/userSlice.js";
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {  
   const currentUser = useSelector(state => state.user.currentUser);
@@ -30,7 +32,9 @@ const Navbar = () => {
         <UserImage src={currentUser.image || avatarUrl} alt="User" />
         <UserName>{currentUser.displayName}</UserName>
       </UserContainer>
-        <LogoutButton onClick={handlerLogout}>Logout</LogoutButton>
+      <div style={{color: "white"}}>
+        <SettingsIcon />
+      </div>                
     </NavbarContainer>
   );
 };
