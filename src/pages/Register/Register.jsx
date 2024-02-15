@@ -9,9 +9,12 @@ import { doc, setDoc } from "firebase/firestore";
 
 import { useDispatch } from "react-redux"
 import { actions } from "../../redux/slices/userSlice.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
-import {   
+import {         
+    ModalContainer,
+    ModalContent,
+    LoadingText,
     FormContainer, 
     ProfileImage, 
     RegisterButton, 
@@ -23,20 +26,22 @@ import {
     InputStyleForm, 
     ProfileImageWrapper,
     IconWrapper,
-    Input2
+    Input2      
 } from "./Register.styles.js";
 import { toBase64 } from "../../utils/to-base64";
 
 
 const Register = () => {
     const [err, setErr] = useState(false);
-    const [file, setFile] = useState();
+    const [file, setFile] = useState();    
+    const [loading, setLoading] = useState(false);
     const [logoUrl, setLogoUrl] = useState();
     
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const handleSubmit = async (e) => {   
+    const handleSubmit = async (e) => {         
+        setLoading(true);  
         e.preventDefault();
         const displayName = e.target[0].value;
         const email = e.target[1].value;
@@ -77,11 +82,13 @@ const Register = () => {
             } catch (err) {
                 console.log(err);
                 setErr(true);
+                setLoading(false);
             }
             });
         });
     } catch (err) {
-      setErr(true);
+      setErr(true);      
+      setLoading(false);
     }
 };
 
@@ -162,8 +169,14 @@ const handleSelectLogo = async event => {
                     }}
                 />
                 <RegisterButton type="submit">Registrar</RegisterButton>
-                
-            {err && <span>Something went wrong</span>}
+                {loading && 
+                    <ModalContainer>
+                        <ModalContent>
+                            <LoadingText>Estamos deixando tudo pronto para você...</LoadingText>
+                        </ModalContent>
+                    </ModalContainer>
+                }
+            <p style={{ color: 'white', marginTop: '10px', fontSize: '1.5vh' }}>Ja tem uma conta? <Link to="/login" style={{ color: 'white', textDecoration: 'underline' }}>Login</Link></p>
             </FormContainer>
         </RegisterContent>
     );

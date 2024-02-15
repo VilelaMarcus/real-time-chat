@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import SendIcon from '@mui/icons-material/Send';
-import { ChatContainer, ChatHeader, MessagesContainer, ChatInputContainer, ChatInput, SendMessageButton } from './Chat.styles';
 import Messages from '../Messages/Messages';
 import { useSelector } from 'react-redux';
 import {
@@ -16,6 +15,17 @@ import { db, storage } from "../../db.js";
 import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { getOtherUserName } from '../../utils/parseName.js';
+import { 
+  ChatContainer, 
+  ChatHeader, 
+  MessagesContainer, 
+  ChatInputContainer, 
+  ChatInput, 
+  SendMessageButton,
+  EmptyChatContainer,
+  EmptyChatTitle,
+} from './Chat.styles';
+
 
 const Chat = () => {
   const {
@@ -105,7 +115,14 @@ const Chat = () => {
   return (
     <ChatContainer>
       {chatId === '' ? (
-        <div>Envie e receba mensagens no melhor aplicativo de mensagens online</div>
+        <>
+        <ChatHeader />
+        <EmptyChatContainer>
+          <EmptyChatTitle>
+            Envie e receba mensagens no melhor aplicativo de mensagens online
+          </EmptyChatTitle>
+        </EmptyChatContainer>
+        </>
       ) : (
         <>
           <ChatHeader>

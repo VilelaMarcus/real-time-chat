@@ -51,7 +51,7 @@ const Chats = () => {
   if (chats.length === 0) {
     return (
       <CenteredContainer>
-        <div>No chats available.</div>
+        <h3>Voce ainda nao tem nenhum chat</h3>
       </CenteredContainer>
     );
   }

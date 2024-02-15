@@ -1,5 +1,18 @@
 import styled from 'styled-components';
 
+
+export const EmptyChatContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+
+export const EmptyChatTitle = styled.h2`
+  color: #333; /* cor do texto */
+`;
+
 export const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;

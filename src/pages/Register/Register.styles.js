@@ -12,6 +12,31 @@ const RegisterContent = styled.div`
   align-items: center; /* Centraliza verticalmente */
 `;
 
+
+const ModalContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  padding: 18px;
+  border-radius: 6px;
+`;
+
+const LoadingText = styled.p`
+  font-size: 16px;
+`;
+
+
+
 const InputForm = styled.input`
   background-color: #3e404b;
   color: white;
@@ -176,6 +201,9 @@ const InputStyleForm = {
 export { Icon2, IconWrapper2, Input2, UploadHeading2 };
 
 export {
+  ModalContainer,
+  ModalContent,
+  LoadingText,
   RegisterContent,
   InputForm,
   InputStyleForm,
@@ -193,61 +221,3 @@ export {
   Icon,
   IconWrapper,
 };
-
-// const EmptyInnerContainer = styled.div`
-//   width: 100%;
-//   height: 100%;
-//   justify-content: center;
-//   align-items: center;
-//   display: flex;
-//   flex-direction: column;
-//   align-self: center;
-// `;
-
-// const EmptyTitle = styled.h2`
-//   font-size: 1.125rem;
-//   font-weight: bold;
-//   font-stretch: normal;
-//   font-style: normal;
-//   line-height: 1.22;
-//   letter-spacing: normal;
-//   text-align: center;
-//   color: #bdbebe; ;
-// `;
-
-// const EmptySubtitle = styled.p`
-//   font-size: 1.125rem;
-//   font-weight: normal;
-//   font-stretch: normal;
-//   font-style: italic;
-//   line-height: 1.22;
-//   letter-spacing: normal;
-//   text-align: center;
-//   color: #bdbebe;
-//   margin-top: 1rem;
-//   margin-bottom: ${rem(30)};
-// `;
-
-// const HeroSection = styled.div`
-//   background: var(--grey-500);
-//   padding: ${rem(30)};
-// `;
-
-// const Container = styled.div`
-//   width: 100%;
-//   height: 100%;
-//   justify-content: center;
-//   align-items: center;
-//   background: var(--white-200);
-//   padding-bottom: ${rem(130)};
-// `;
-
-// const CoverPhoto = styled.div`
-//   display: flex;
-//   justify-content: flex-end;
-//   margin-top: ${rem(80)};
-//   height: ${rem(200)};
-//   background: url(${props => props.src}), var(--black-500);
-//   background-size: cover;
-//   background-position: center;
-// `;
