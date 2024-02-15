@@ -20,6 +20,7 @@ import {
 
 const Login = () => {
     const [err, setErr] = useState(false);
+    const [errMessage, setErrMessage] = useState('');
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -45,7 +46,9 @@ const Login = () => {
             dispatch(actions.login(userToSave))
         }
     } catch (err) {
-      setErr(true);
+        console.log({err});
+        setErrMessage(err.message);
+        setErr(true);
     }
   };
 
@@ -79,7 +82,10 @@ const Login = () => {
                     }}
                 />
                 <RegisterButton type="submit">Entrar</RegisterButton>
-                {err && <span>Something went wrong</span>}
+                {err && <span style={{
+                    color: 'red',
+                    fontSize: '1.2vh',         
+                }}>{errMessage}</span>}
                 <p style={{ color: 'white', marginTop: '10px', fontSize: '1.5vh' }}>Não tem uma conta? <Link to="/register" style={{ color: 'white', textDecoration: 'underline' }}>Cadastre-se</Link></p>
             </FormContainer>
         </RegisterContent>

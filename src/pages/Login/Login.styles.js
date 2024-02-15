@@ -62,6 +62,7 @@ const RegisterButton = styled.button`
   width: 100%;
   height: 53px;
   color: white;
+  margin-bottom: 12px;
   background-color: #fa541c;
   border: none;
   outline: none;

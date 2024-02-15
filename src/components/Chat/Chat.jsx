@@ -102,9 +102,7 @@ const Chat = () => {
 
 
     await updateDoc(doc(db, "Chat", chatId), {
-      [ "lastMessage"]: {
-        messageText,
-      }
+      [ "lastMessage"]:  messageText     
     });
     }
     setMessageText("");

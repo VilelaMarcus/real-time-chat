@@ -99,6 +99,8 @@ const Search = () => {
         }));
       }
     
+      setSearchTerm("");
+
     } catch (error) {
       console.error("Error selecting user:" , error);
     }

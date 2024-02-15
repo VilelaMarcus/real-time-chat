@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../../db.js";
 import Message from "../Message/Message.jsx";
 
@@ -26,15 +26,10 @@ const Messages = () => {
         const timeA = a.time;
         const timeB = b.time;
       
-        console.log({timeA, timeB})
-        console.log(timeA.seconds)
-        console.log(timeB.nanoseconds)
-        // Comparação dos segundos
         if (timeA.seconds !== timeB.seconds) {
           return timeA.seconds - timeB.seconds;
         }
       
-        // Se os segundos forem iguais, comparação dos nanossegundos
         return timeA.nanoseconds - timeB.nanoseconds;
       });
 

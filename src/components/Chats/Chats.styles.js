@@ -6,6 +6,33 @@ export const ChatsContainer = styled.div`
   padding: 20px;
 `;
 
+export const UserImage = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+`;
+
+export const ChatInfo = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const UserName = styled.p`
+  font-weight: bold;
+  margin-bottom: 5px;
+`;
+
+export const LastMessage = styled.p`
+  color: #666;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 150px; /* Defina a largura desejada para o contêiner LastMessage */
+`;
+
 export const ChatItem = styled.div`
   display: flex;
   align-items: center;

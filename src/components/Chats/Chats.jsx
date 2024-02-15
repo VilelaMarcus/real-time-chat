@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../../db.js";
-import { ChatsContainer, ChatItem, CenteredContainer } from "./Chats.styles";
+import { ChatsContainer, ChatItem, CenteredContainer, UserImage, ChatInfo, UserName, LastMessage } from "./Chats.styles";
 import { getOtherUserName } from "../../utils/parseName.js";
 import { actions } from "../../redux/slices/chatsSlice.js";
 
@@ -57,6 +57,7 @@ const Chats = () => {
   }
 
 
+  console.log({chats})
 
 const handleSelectUser = (chat) => {  
   const payload = {
@@ -75,12 +76,12 @@ const handleSelectUser = (chat) => {
       {chats
         .sort((a, b) => b.date - a.date)
         .map((chat) => (
-          <ChatItem key={chat.id} onClick={() => handleSelectUser(chat)}>
-            <img src={ chat.images[currentUser.id === chat.members[0] ? chat.members[1] : chat.members[0]] || avatarUrl } alt="" />
-            <span>{getOtherUserName(chat.name, currentUser.displayName)}</span>
-            <div className="userChatInfo">
-              <p>{chat.lastMessage?.text}</p>
-            </div>
+          chat.lastMessage && <ChatItem key={chat.id} onClick={() => handleSelectUser(chat)}>
+            <UserImage src={chat.images[currentUser.id === chat.members[0] ? chat.members[1] : chat.members[0]] || avatarUrl} alt="" />
+            <ChatInfo>
+              <UserName>{getOtherUserName(chat.name, currentUser.displayName)}</UserName>
+              <LastMessage>{chat.lastMessage}</LastMessage>
+            </ChatInfo>
           </ChatItem>
         ))}
     </ChatsContainer>
